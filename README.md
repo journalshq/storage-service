@@ -1,14 +1,13 @@
-Typescript and Express.js 
+Storage Service
 =========================
-
-An Express.js project implemented using Typescript with strongly typed objects:
+A service responsible for storing and retrieving content on IPFS, Filecoin
 
 # Installation
 
 Clone the repository
 
 ```
-npm install 
+npm install
 ```
 
 For development:
@@ -90,7 +89,7 @@ Browse to http://localhost:3000
 
 # Docker
 
-Build the image `sudo docker build -t rjmacarthy/express-typescript-starter .`
+Build the image `sudo docker build -t journalshq/storage-service .`
 
 Run the image `docker-compose up`
 
