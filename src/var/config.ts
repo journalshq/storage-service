@@ -1,6 +1,7 @@
 export const {
   DB,
   PORT,
+  WEB3_STORAGE_API,
 } = process.env
 
 export const ROUTES_DIR = './dist/routes/**/*.js'

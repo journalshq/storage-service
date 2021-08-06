@@ -5,7 +5,7 @@ export class Socket {
   public io: socket.Server
 
   constructor(server: Server) {
-    this.io = socket(server)
+    this.io = new socket.Server(server)
     this.connect()
   }
 

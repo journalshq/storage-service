@@ -1,7 +1,7 @@
 require('dotenv').config()
 import * as http from 'http'
 import { DB, PORT } from './var/config'
-import { Socket } from './socket/index'
+import { Socket } from './socket'
 import app from './server'
 
 const server: http.Server = http.createServer(app)
