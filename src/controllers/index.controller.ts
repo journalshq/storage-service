@@ -30,9 +30,8 @@ export default class FileController {
   public async save(req: Request, res: Response) {
     try {
       const { address } = req.params
-      const data = await contentService.save(address, req.file)
-      console.log(data)
-      res.status(200).send({ data })
+      const response = await contentService.save(address, req.file)
+      res.status(200).send({ data: response })
     } catch (error) {
       console.error(error)
       res.status(500).send()
