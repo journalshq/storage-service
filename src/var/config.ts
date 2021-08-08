@@ -1,8 +1,3 @@
-export const {
-  DB,
-  PORT,
-  WEB3_STORAGE_API,
-} = process.env
+export const { DB, PORT, TEXTILE_PUBLIC_KEY, TEXTILE_SECRET } = process.env
 
-export const ROUTES_DIR = './dist/routes/**/*.js'
 export const MODELS_DIR = './dist/models/**/*.js'
