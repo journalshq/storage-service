@@ -11,4 +11,10 @@ export default class ContentService {
   public async findAllByAddress(address: string) {
     return this.database.findAllByAddress(address)
   }
+  public async findByCid(cid: string) {
+    return this.database.findByCid(cid)
+  }
+  public async getByIpfsPath(ipfsPath: string) {
+    return this.database.getByIpfsPath(ipfsPath)
+  }
 }

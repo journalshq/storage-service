@@ -3,6 +3,8 @@ import { Express, Request, Response } from 'express'
 import MetadataService from '../service/metadata.service'
 import ContentService from '../service/content.service'
 import multer from 'multer'
+import { downloadFile } from '../helpers'
+import { CONTENT_URI } from '../var/config'
 
 const upload = multer({ storage: multer.memoryStorage() })
 
@@ -12,19 +14,27 @@ const contentService = new ContentService()
 export default class FileController {
   constructor(app: Express) {
     const basePath = '/api'
-    app.get(`${basePath}/accounts/:address/files/:cid`, this.getFileByCid)
+    app.get(`${basePath}/files`, this.getFileByIpfsPath)
     app.post(
       `${basePath}/accounts/:address/files`,
       upload.single('file'),
       this.save
     )
-    app.get(`${basePath}/files/:cid/metadata`, this.getMetadata)
     app.get(`${basePath}/accounts/:address/files`, this.findAllByAddress)
+    app.get(`${basePath}/accounts/:address/files/:cid`, this.findAllByAddress)
+    app.get(`${basePath}/files/metadata`, this.getMetadata)
   }
 
-  public getFileByCid(req: Request, res: Response): void {
-    const cid = req.params.cid
-    // res.sendFile(path.resolve('public/uploads/', cid))
+  public async getFileByIpfsPath(req: Request, res: Response) {
+    try {
+      const ipfsPath = (req.query.ipfsPath as string) || ''
+      const data = await contentService.getByIpfsPath(ipfsPath)
+      console.log(data)
+      res.status(200).send({ data })
+    } catch (error) {
+      console.log(error)
+      res.status(500).send()
+    }
   }
 
   public async save(req: Request, res: Response) {
@@ -40,11 +50,17 @@ export default class FileController {
 
   public async getMetadata(req: Request, res: Response) {
     try {
-      const { address, cid } = req.params
+      const ipfsPath = (req.query.ipfsPath as string) || ''
+      const data = await contentService.getByIpfsPath(ipfsPath)
+      // TODO: Verify cid belongs to address
 
-      const metadata = await metadataService.extract(cid)
+      const metadata = await metadataService.extract(
+        `${CONTENT_URI}/${data?.cid}`,
+        data?.name
+      )
       res.status(200).send({ data: metadata })
     } catch (error) {
+      console.error(error)
       res.status(500).send()
     }
   }
