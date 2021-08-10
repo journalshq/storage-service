@@ -4,7 +4,7 @@ import * as express from 'express'
 import logger from 'morgan'
 import * as path from 'path'
 import cors from 'cors'
-import FileController from '../controllers/index.controller'
+import { StorageController } from '../controllers/storage.controller'
 
 import { DB, MODELS_DIR } from '../var/config'
 import { globFiles } from '../helpers'
@@ -24,6 +24,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(cors())
 
-new FileController(app)
+new StorageController(app)
 
 export default app
