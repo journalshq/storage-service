@@ -16,6 +16,7 @@ ffmpeg.setFfprobePath(ffprobePath.path)
 
 const unlink = util.promisify(fs.unlink)
 const readFile = util.promisify(fs.readFile)
+const readdir = util.promisify(fs.readdir)
 
 const exiftool = new ExifTool({ ignoreShebang: true })
 
@@ -46,9 +47,9 @@ export default class ImageService {
       ffmpeg(filePath)
         .takeScreenshots(
           {
-            count: 1,
-            timemarks: ['0'],
-            filename: 'temp.png',
+            count: 3,
+            timemarks: ['0%', '25%', '50%', '75%'],
+            filename: 'thumbnail-%s.png',
           },
           thumbnailPath
         )
@@ -61,15 +62,29 @@ export default class ImageService {
         })
     })
   }
-  public async createThumbnail(filePath: string, thumbnailPath: string) {
-    const buffer = await readFile(filePath)
+  public async setGPS(filePath: string) {
+    await exiftool.write(filePath, {
+      GPSLatitude: 50.84827,
+      GPSLongitude: 4.34603,
+    })
+  }
+  public async createThumbnail(directory: string, isVideo: boolean) {
+    let files = await readdir(directory)
 
-    await sharp(buffer)
-      .resize(1280, 720, {
-        kernel: sharp.kernel.nearest,
-        fit: 'contain',
-        background: { r: 75, g: 75, b: 75 },
-      })
-      .toFile(thumbnailPath)
+    if (isVideo) {
+      files = files.filter((item: string) => !item.startsWith('original'))
+    }
+
+    for (const file of files) {
+      const filePath = `${directory}/${file}`
+      const buffer = await readFile(filePath)
+      await sharp(buffer)
+        .resize(960, 540, {
+          kernel: sharp.kernel.nearest,
+          fit: 'contain',
+          background: { r: 75, g: 75, b: 75 },
+        })
+        .toFile(filePath)
+    }
   }
 }

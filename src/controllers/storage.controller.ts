@@ -4,6 +4,7 @@ import StorageService from '../service/storage.service'
 import multer from 'multer'
 import { CONTENT_URI } from '../var/config'
 import ImageService from '../service/image.service'
+import path from 'path'
 
 const upload = multer({ storage: multer.memoryStorage() })
 

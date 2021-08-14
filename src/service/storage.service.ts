@@ -26,7 +26,7 @@ export default class StorageService {
     const extension = getFileExtension(file.originalname)
     const dir = path.resolve('public/uploads/', uuid)
     const pathToOriginal = `${dir}/original.${extension}`
-    let thumbnailTarget = pathToOriginal
+    let thumbnailTargets = [pathToOriginal]
 
     // 1. Setup folder for new event
     if (!fs.existsSync(dir)) {
@@ -35,16 +35,15 @@ export default class StorageService {
     // 2. Save original file to folder as original.extension
     await writeFile(pathToOriginal, file.buffer)
 
-    // 3. Generate TEMP image for video
+    // 3. Generate 3 TEMP thumbnail images for video
     if (VIDEO_FORMATS.includes(extension)) {
       await this.metadataService.setVideoThumbnail(pathToOriginal, dir)
-      thumbnailTarget = `${dir}/temp.png`
     }
 
     // 4. Generate official thumbnail
     await this.metadataService.createThumbnail(
-      thumbnailTarget,
-      `${dir}/thumbnail.png`
+      dir,
+      VIDEO_FORMATS.includes(extension)
     )
 
     // 5. OPTIONAL: remove temp-file if video
